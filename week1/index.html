@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta name = "viewport" content="width = device-width, initial-scale = 1.0"/>
+        <meta charset = "UTF-8"/>
+        <title>RWD practise</title>
+        <link rel = "stylesheet" type = "text/css" href = "style.css">
+    </head>
+    <body>
+        <header class = "navbar">
+            <div class = "title">My Website</div>
+            <button class = "hamburgerBtn" id = "hamburgerBtn">☰</button>
+            <nav class = "navbarRight" id = "navbarRight">
+                <button class = "closeBtn" id = "closeBtn">✖</button>
+                <a href = "https://wehelp.tw/academy" class = "item">Item 1</a>
+                <a href = "https://wehelp.tw/coding" class = "item">Item 2</a>
+                <a href = "https://wehelp.tw/partner" class = "item">Item 3</a>
+                <a href = "https://wehelp.tw/topic" class = "item">Item 4</a>
+            </nav>
+        </header>
+        <main>
+            <div class = "welcome">Welcome to MyHome</div>
+            <div class = "mainContent">
+                <div class = "mainContentBar">
+                    <div class = "Bar">
+                        <img src = "125075.jpg" width="80px" height="50px" style="margin-right:10px">Promotion 1
+                    </div>
+                    <div class = "Bar">
+                        <img src = "125075.jpg" width="80px" height="50px" style="margin-right:10px">Promotion 2
+                    </div>
+                    <div class = "Bar">
+                        <img src = "125075.jpg" width="80px" height="50px" style="margin-right:10px">Promotion 3
+                    </div>
+                </div>
+                <div class = "contentBlocks">
+                    <div class = "box">
+                        <img src = "125075.jpg" class = "img"/>
+                        <div class = "overlayText">Title 1</div>
+                        <div class = "imgStar">★</div>
+                    </div>
+                    <div class = "box">
+                        <img src = "125075.jpg" class = "img"/>
+                        <div class = "overlayText">Title 2</div>
+                        <div class = "imgStar">★</div>
+                    </div>
+                    <div class = "box">
+                        <img src = "125075.jpg" class = "img"/>
+                        <div class = "overlayText">Title 3</div>
+                        <div class = "imgStar">★</div>
+                    </div>
+                    <div class = "box">
+                        <img src = "125075.jpg" class = "img"/>
+                        <div class = "overlayText">Title 4</div>
+                        <div class = "imgStar">★</div>
+                    </div>
+                    <div class = "box">
+                        <img src = "125075.jpg" class = "img"/>
+                        <div class = "overlayText">Title 5</div>
+                        <div class = "imgStar">★</div>
+                    </div>
+                    <div class = "box">
+                        <img src = "125075.jpg" class = "img"/>
+                        <div class = "overlayText">Title 6</div>
+                        <div class = "imgStar">★</div>
+                    </div>
+                    <div class = "box">
+                        <img src = "125075.jpg" class = "img"/>
+                        <div class = "overlayText">Title 7</div>
+                        <div class = "imgStar">★</div>
+                    </div>
+                    <div class = "box">
+                        <img src = "125075.jpg" class = "img"/>
+                        <div class = "overlayText">Title 8</div>
+                        <div class = "imgStar">★</div>
+                    </div>
+                    <div class = "box">
+                        <img src = "125075.jpg" class = "img"/>
+                        <div class = "overlayText">Title 9</div>
+                        <div class = "imgStar">★</div>
+                    </div>
+                    <div class = "box">
+                        <img src = "125075.jpg" class = "img"/>
+                        <div class = "overlayText">Title 10</div>
+                        <div class = "imgStar">★</div>
+                    </div>
+                </div>
+            </div>
+        </main>
+        <script>
+            //取得元素
+            const hamburgerBtn = document.getElementById("hamburgerBtn");
+            const closeBtn = document.getElementById("closeBtn");
+            const navbarRight = document.getElementById("navbarRight");
+            //點擊漢堡按鈕滑出選單
+            hamburgerBtn.addEventListener("click", function(){
+                navbarRight.classList.remove("close");
+                navbarRight.classList.add("open");
+            });
+            //點擊X關掉
+            closeBtn.addEventListener("click", function(){
+                navbarRight.classList.remove("open");
+                navbarRight.classList.add("close")
+            });
+            //動畫跑完後 從navbarRight拿掉.close
+            navbarRight.addEventListener("animationend",function(){
+                navbarRight.classList.remove("close");
+            });
+        </script>
+    </body>
+</html>

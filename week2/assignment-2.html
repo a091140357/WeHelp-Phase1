@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta name = "viewport" content="width = device-width, initial-scale = 1.0"/>
+        <meta charset = "UTF-8"/>
+        <title>assignment</title>
+    </head>
+    <body>
+        <script>
+            function func1(name){
+                const coordinate = {
+                    "辛巴" : [-3,3],
+                    "貝吉塔" : [-4,-1],
+                    "悟空" : [0,0],
+                    "特南克斯" : [1,-2],
+                    "丁滿" : [-1,4],
+                    "弗利沙" : [4,-1]
+                };
+                //設定線段右邊一組
+                const groupRight = ["丁滿","弗利沙"];
+
+                //判斷是不是同一組
+                const nameInGroup =groupRight.includes(name)
+
+                const distanceDist = {};
+
+                //判斷有沒有符合名字
+                if (name in coordinate){
+                   const mainPoint = coordinate[name];
+
+                   for (const iName in coordinate){
+                    const iValues = coordinate[iName];
+                    //跳過自己
+                    if (iName === name){
+                        continue;
+                    }
+                    //計算距離 並把在線段另一側的都加2距離
+                    else{
+                        const xPoint = iValues[0] - mainPoint[0];
+                        const yPoint = iValues[1] - mainPoint[1];
+                        let distance = Math.abs(xPoint) + Math.abs(yPoint);
+
+                        if ((groupRight.includes(iName)) !== nameInGroup){
+                            distance = distance + 2;
+                        }
+                        distanceDist[iName] = distance;
+                    }
+                   }
+                
+                //找最大最小值
+                const distances = Object.values(distanceDist);
+                const maxValues = Math.max(...distances);
+                const minValues = Math.min(...distances);
+                
+                //根據最大最小值找相符的名字
+                const maxPerson = Object.keys(distanceDist).filter(person => distanceDist[person] === maxValues);
+                const minPerson = Object.keys(distanceDist).filter(person => distanceDist[person] === minValues);
+                
+                //處理文字
+                const maxStr = maxPerson.join("、");
+                const minStr = minPerson.join("、");
+
+                console.log(`最遠${maxStr};最近${minStr}`);
+                }
+                else{
+                    console.log("輸入錯誤，請輸入座標名字");
+                }
+            }
+            
+            // func1("辛巴"); //print 最遠弗利沙；最近丁滿、貝吉塔
+            // func1("悟空"); //print 最遠丁滿、弗利沙；最近特南克斯
+            // func1("弗利沙"); //print 最遠辛巴，最近特南克斯
+            // func1("特南克斯"); //print 最遠丁滿，最近悟空
+
+            function func2(ss, start, end, criteria) {
+                //確認start,end都是數字
+                if (!Number.isInteger(start) || !Number.isInteger(end)) {
+                    console.log("預約時間必須要是數字喔");
+                    return;
+                }
+
+                if (start < 0 || start >= 24 || end < 1 || end > 24) {
+                    console.log("預約時間請填寫正確");
+                    return;
+                }
+                
+                if (start >= end) {
+                    console.log("預約起始時間不可大於或等於結束時間");
+                    return;
+                }
+
+                //確認輸入運算符號是對的
+                const checkOp = ["=", ">=", "<="];
+                if (!checkOp.some(op => criteria.includes(op))) {
+                    console.log("'criteria'運算符有誤");
+                    return;
+                }
+
+                //分析criteria
+                let op = "";
+                let field, val_str, val;
+
+                if (criteria.includes(">=")) {
+                    op = ">=";
+                    [field, val_str] = criteria.split(">=");
+                    val = parseFloat(val_str);
+                } else if (criteria.includes("<=")) {
+                    op = "<=";
+                    [field, val_str] = criteria.split("<=");
+                    val = parseFloat(val_str);
+                } else if (criteria.includes("=")) {
+                    op = "=";
+                    [field, val_str] = criteria.split("=");
+                    //如果field是name就是字串 如果是其他就轉成浮點數
+                    val = (field === "name") ? val_str : parseFloat(val_str);
+                }
+
+                let best_service = null;
+                
+                //用來找差距最小的
+                let min_diff = Infinity;
+
+                for (let s of ss) {
+                    //如果還沒有紀錄 就新增{"bookings" : []}
+                    if (!s.bookings) {
+                        s.bookings = [];
+                    }
+
+                    //檢查預約時間與紀錄時間有沒有衝突
+                    let is_available = true;
+                    for (let [b_start, b_end] of s.bookings) {
+                        if (start < b_end && end > b_start) {
+                            is_available = false;
+                            break;
+                        }
+                    }
+                    
+                    //如果時間衝突is_available會被改成false 就會跳到下一個
+                    if (!is_available) {
+                        continue;
+                    }
+                    
+                    //抓取價格
+                    let s_val = s[field];
+
+                    let matches = false;
+                    let diff = Infinity;
+
+                    if (op === "=") {
+                        if (s_val === val) {
+                            matches = true;
+                            diff = 0;
+                        }
+                    } else if (op === ">=") {
+                        if (s_val >= val) {
+                            matches = true;
+                            diff = Math.abs(s_val - val);
+                        }
+                    } else if (op === "<=") {
+                        if (s_val <= val) {
+                            matches = true;
+                            diff = Math.abs(s_val - val);
+                        }
+                    }
+
+                    //找差值最小的
+                    if (matches) {
+                        if (diff < min_diff) {
+                            min_diff = diff;
+                            best_service = s;
+                        }
+                    }
+                }
+
+                //更新預約狀態
+                if (best_service) {
+                    best_service.bookings.push([start, end]);
+                    console.log(best_service.name);
+                } else {
+                    console.log("Sorry");
+                }
+            }
+
+            // const services = [
+            //     {name: "S1", r: 4.5, c: 1000},
+            //     {name: "S2", r: 3, c: 1200},
+            //     {name: "S3", r: 3.8, c: 800}
+            // ];
+
+            // func2(services, 15, 17, "c>=800"); // S3
+            // func2(services, 11, 13, "r<=4"); // S3
+            // func2(services, 10, 12, "name=S3"); // Sorry
+            // func2(services, 15, 18, "r>=4.5"); // S1
+            // func2(services, 16, 18, "r>=4"); // Sorry
+            // func2(services, 13, 17, "name=S1"); // Sorry
+            // func2(services, 8, 9, "c<=1500"); // S2
+
+            function func3(index) {
+                //判斷是不是整數 而且不可以小於0
+                if (!Number.isInteger(index) || index < 0) {
+                    console.log("輸入錯誤");
+                    return;
+                }
+
+                let sequence = [25];
+                let a = 25;
+
+                // 如果 sequence 長度小於等於 index 指定的數字
+                while (sequence.length <= index) {
+                    let a1 = a - 2;
+                    let a2 = a1 - 3;
+                    let a3 = a2 + 1;
+                    let a4 = a3 + 2;
+                    
+                    //把四個數字都加進sequence裡面
+                    sequence.push(a1, a2, a3, a4);
+                    a = a4;
+                }
+
+                console.log(sequence[index]);
+            }
+            
+            // func3(1); // print 23
+            // func3(5); // print 21
+            // func3(10); // print 16
+            // func3(30); // print 6
+
+            function func4(sp, stat, n) {
+                let best_idx = -1;
+                let best_diff = Infinity;
+                
+                let fallback_idx = -1;
+                let max_space = -1;
+
+                //擋掉輸入負數或True,False
+                for (let i of sp) {
+                    if (!Number.isInteger(i) || i < 0) {
+                        console.log("'sp'輸入錯誤");
+                        return;
+                    }
+                }
+
+                //如果stat不是輸入1,0就擋掉
+                for (let char of stat) {
+                    if (char !== "0" && char !== "1") {
+                        console.log("車廂狀態'stat'輸入錯誤");
+                        return;
+                    }
+                }
+                        
+                //如果sp數量與stat數量不符就擋掉
+                if (sp.length !== stat.length) {
+                    console.log(`輸入錯誤，車廂數量(${sp.length})與狀態數量(${stat.length})不符合`);
+                    return;
+                }
+                
+                //如果n不是整數或小於等於0就擋掉
+                if (!Number.isInteger(n) || n <= 0) {
+                    console.log("'n'輸入錯誤");
+                    return;
+                }
+                
+                for (let i = 0; i < sp.length; i++) {
+                    //確認座位能不能使用
+                    if (stat[i] === "0") {
+                        //可以容納得話
+                        if (sp[i] >= n) {
+                            //這邊diff是座位數大於乘客多幾位
+                            let diff = sp[i] - n;
+                            if (diff < best_diff) {
+                                best_diff = diff;
+                                best_idx = i;
+                            }
+                        } else {
+                            //記錄目前找到空位最多的
+                            if (sp[i] > max_space) {
+                                max_space = sp[i];
+                                fallback_idx = i;
+                            }
+                        }
+                    }
+                }
+                                
+                //如果有找到能容納的車廂 就輸出best_idx 不然就輸出fallback_idx
+                let result = best_idx !== -1 ? best_idx : fallback_idx;
+                console.log(result);
+                return result;
+            }
+            
+            // func4([3, 1, 5, 4, 3, 2], "101000", 2); //print 5
+            // func4([1, 0, 5, 1, 3], "10100", 4); // print 4
+            // func4([4, 6, 5, 8], "1000", 4); //print 2
+        </script>
+    </body>
+</html>
+    
