@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta name = "viewport" content="width = device-width, initial-scale = 1.0"/>
+        <meta charset = "UTF-8"/>
+        <title>RWD practise</title>
+        <link rel = "stylesheet" type = "text/css" href = "style.css">
+    </head>
+    <body>
+        <header class = "navbar">
+            <div class = "title">My Website</div>
+            <button class = "hamburgerBtn" id = "hamburgerBtn">☰</button>
+            <nav class = "navbarRight" id = "navbarRight">
+                <button class = "closeBtn" id = "closeBtn">✖</button>
+                <a href = "https://wehelp.tw/academy" class = "item">Item 1</a>
+                <a href = "https://wehelp.tw/coding" class = "item">Item 2</a>
+                <a href = "https://wehelp.tw/partner" class = "item">Item 3</a>
+                <a href = "https://wehelp.tw/topic" class = "item">Item 4</a>
+            </nav>
+        </header>
+        <main>
+            <div class = "welcome">Welcome to MyHome</div>
+            <div class = "mainContent" id = "mainContent">
+                <div class = "mainContentBar" id = "mainContentBar">
+                </div>
+            </div>
+            <div class = "loadMore">
+                <button class = "loadMoreBtn" id = "loadMoreBtn">Load More</button>
+            </div>
+        </main>
+        <script>
+            //取得元素
+            const hamburgerBtn = document.getElementById("hamburgerBtn");
+            const closeBtn = document.getElementById("closeBtn");
+            const navbarRight = document.getElementById("navbarRight");
+            //點擊漢堡按鈕滑出選單
+            hamburgerBtn.addEventListener("click", function(){
+                navbarRight.classList.remove("close");
+                navbarRight.classList.add("open");
+            });
+            //點擊X關掉
+            closeBtn.addEventListener("click", function(){
+                navbarRight.classList.remove("open");
+                navbarRight.classList.add("close")
+            });
+            //動畫跑完後 從navbarRight拿掉.close
+            navbarRight.addEventListener("animationend",function(){
+                navbarRight.classList.remove("close");
+            });
+
+            
+            const mainContentBar = document.getElementById("mainContentBar");
+            const contentBlocks = document.getElementById("contentBlocks");
+
+            let nameDic = {};
+            let picDic = {};
+            let namePicDic = {};
+            let nameDicKey = [];
+            let hostUrl = "";
+
+            async function renderUrlPic(){
+                    let res1 = await fetch("https://cwpeng.github.io/test/assignment-3-1");
+                    let data1 = await res1.json();
+
+                    let res2 = await fetch("https://cwpeng.github.io/test/assignment-3-2");
+                    let data2 = await res2.json();
+
+                    hostUrl = data2.host
+
+                    data1.rows.forEach((data)=> {
+                        nameDic[data.sname] = data.serial
+                    });
+                    data2.rows.forEach((data)=>{
+                       picDic[data.serial] = data.pics 
+                    });
+
+                    nameDicKey = Object.keys(nameDic);
+
+                    nameDicKey.forEach((key)=>{
+                        namePicDic[key] = picDic[nameDic[key]]
+                    });
+                    
+                    for(let i = 0; i < 3; i++){
+                        let data = namePicDic[nameDicKey[i]];
+                        
+                        let barDiv = document.createElement("div");
+                        barDiv.className = "Bar";
+                        let img = document.createElement("img");
+                        img.style.width = "80px";
+                        img.style.height = "50px";
+                        img.style.marginRight = "10px";
+                        let imgUrl = hostUrl + data.split(".jpg").filter(item => item !== "").map(item => item + ".jpg")[0];
+                        img.src = imgUrl;
+                        let textNode = document.createTextNode(nameDicKey[i]);
+
+                        barDiv.appendChild(img);
+                        barDiv.appendChild(textNode);
+                        mainContentBar.appendChild(barDiv);
+                    }
+
+                    let blocksDiv = document.createElement("div");
+                    blocksDiv.className = "contentBlocks";
+                    blocksDiv.id = "contentBlocks";
+
+                    for(let i = 3; i<13; i++){
+                        let data = namePicDic[nameDicKey[i]];
+
+                        let boxDiv = document.createElement("div");
+                        boxDiv.className = "box";
+                        let img = document.createElement("img");
+                        let imgUrl = hostUrl + data.split(".jpg").filter(item => item !== "").map(item => item + ".jpg")[0];
+                        img.src = imgUrl;
+                        img.className = "img";
+                        let textDiv = document.createElement("div");
+                        textDiv.className = "overlayText";
+                        let textNode = document.createTextNode(nameDicKey[i].length > 7 ? nameDicKey[i].substring(0,7) + "..." : nameDicKey[i]);
+                        let starDiv = document.createElement("div");
+                        starDiv.className = "imgStar";
+                        let starText = document.createTextNode("★");
+
+                        textDiv.appendChild(textNode);
+                        starDiv.appendChild(starText);
+                        boxDiv.appendChild(img);
+                        boxDiv.appendChild(textDiv);
+                        boxDiv.appendChild(starDiv);
+                        blocksDiv.appendChild(boxDiv);
+
+                        mainContent.appendChild(blocksDiv);
+                        
+                    }
+
+            }
+
+            renderUrlPic()
+
+            const loadMoreBtn = document.getElementById("loadMoreBtn");
+            let btnTime = 13
+
+            loadMoreBtn.addEventListener("click", function(){
+
+                let blocksDiv = document.createElement("div");
+                blocksDiv.className = "contentBlocks";
+                blocksDiv.id = "contentBlocks";
+
+                let endIndex = btnTime + 10;
+
+                for(let i = btnTime;i < endIndex; i++){
+                    if(i >= nameDicKey.length){
+                        loadMoreBtn.style.display = "none";
+                        break;
+                    }
+
+                    let data = namePicDic[nameDicKey[i]];
+
+                    let boxDiv = document.createElement("div");
+                    boxDiv.className = "box";
+                    let img = document.createElement("img");
+                    let imgUrl = hostUrl + data.split(".jpg").filter(item => item !== "").map(item => item + ".jpg")[0];
+                    img.src = imgUrl;
+                    img.className = "img";
+                    let textDiv = document.createElement("div");
+                    textDiv.className = "overlayText";
+                    let textNode = document.createTextNode(nameDicKey[i].length > 7 ? nameDicKey[i].substring(0,7) + "..." : nameDicKey[i]);
+                    let starDiv = document.createElement("div");
+                    starDiv.className = "imgStar";
+                    let starText = document.createTextNode("★");
+
+                    textDiv.appendChild(textNode);
+                    starDiv.appendChild(starText);
+                    boxDiv.appendChild(img);
+                    boxDiv.appendChild(textDiv);
+                    boxDiv.appendChild(starDiv);
+                    blocksDiv.appendChild(boxDiv);
+
+                    mainContent.appendChild(blocksDiv);
+                        
+                    }
+                btnTime = endIndex;
+            })
+
+        </script>
+    </body>
+</html>

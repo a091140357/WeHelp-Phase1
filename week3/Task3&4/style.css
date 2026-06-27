@@ -1,0 +1,236 @@
+* {
+    box-sizing: padding-box;
+    position: relative;
+    padding: 0;
+    margin: 0;
+  }
+.navbar{
+    display:flex;
+    align-items: center;
+    height:40px;
+}
+.title{
+    font-size:20px;
+    margin-left:10px;
+    margin-right:10px;
+}
+.navbarRight{
+    display:flex;
+    justify-content:flex-end;
+    flex:auto;
+}
+.item{
+    font-size:20px;
+    margin-left:10px;
+    margin-right:10px;
+    text-decoration: none;
+    color:black;
+}
+.welcome{
+    display:flex;
+    height:250px;
+    background-color: rgb(209, 234, 254);
+    font-size:40px;
+    align-items:center;
+    justify-content:center;
+}
+.mainContent{
+    width:1200px;
+    margin:0 auto;
+    margin-top:40px;
+}
+.mainContentBar{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);/*分配成3份中1份*/
+    gap:20px
+}
+.Bar{
+    font-size:20px;
+    display:flex;
+    align-items:center;
+    height:50px;
+    background-color:rgb(209, 234, 254);
+}
+.Bar:nth-child(1){
+    grid-column:span 3;
+}
+.Bar:nth-child(2){
+    grid-column:span 2;
+}
+.mainContentBarImg{
+    margin-right:10px;
+    object-fit:cover;/*保持寬高比填滿整個框框*/
+}
+.contentBlocks{
+    display:grid;
+    grid-template-columns:repeat(6,1fr);
+    gap: 20px;
+    margin-top:20px;
+}
+.box{
+    position:relative;
+    height:250px;
+}
+.box:nth-child(1),
+.box:nth-child(6){
+    grid-column: span 2;
+}
+.img{
+    height:100%;
+    width:100%;
+    object-fit: cover;
+}
+.overlayText{/*圖片上透明色塊與文字*/
+    position:absolute;
+    width:100%;
+    height:20%;
+    bottom:0;
+    font-size:20px;
+    display:flex;
+    text-align: center;
+    align-items:center;
+    justify-content:center;
+    background-color: rgba(191, 189, 187, 0.724);
+}
+.imgStar{
+    position:absolute;
+    top: 10px;
+    right:12px;
+    font-size:25px;
+    color:rgba(245, 237, 3, 0.477);
+}
+.hamburgerBtn,
+.closeBtn{
+    display:none;
+}
+.loadMore{
+    height: 90px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+}
+.loadMoreBtn{
+    height: 50px;
+    width:120px;
+    border:0px;
+    cursor: pointer;
+}
+.loadMoreBtn:hover{
+    background-color: rgb(233, 233, 233);
+    transform:scale(1.05);
+}
+.loadMoreBtn:active{
+    background-color: rgb(222, 222, 222);
+    transform:scale(0.95);
+}
+@media (max-width:1200px){
+.mainContent{
+    width:90%;
+}
+.mainContentBar{
+    grid-template-columns:repeat(2,1fr);
+}
+.Bar:nth-child(1){
+    grid-column:span 1;
+}
+.Bar:nth-child(2){
+    grid-column:span 1;
+}
+.Bar:nth-child(3){
+    grid-column:span 2;
+}
+.contentBlocks{
+    grid-template-columns:repeat(4,1fr);
+}
+.box:nth-child(1),
+.box:nth-child(6){
+    grid-column: span 1;
+}
+.box:nth-child(9),
+.box:nth-child(10){
+    grid-column:span 2;
+}
+}
+@media (max-width:600px){
+.mainContentBar{
+    grid-template-columns:repeat(1,1fr);
+}
+.Bar:nth-child(3){
+    grid-column:span 1;
+}
+.contentBlocks{
+    grid-template-columns:repeat(1,1fr);
+}
+.box:nth-child(9),
+.box:nth-child(10){
+    grid-column:span 1;
+}
+.hamburgerBtn{
+    display:flex;
+    align-items:center;
+    font-size:28px;
+    margin-left:auto;
+    margin-right:10px;
+    border:none;
+    background-color: transparent;/*把背景顏色變成透明*/
+    cursor: pointer;
+}
+.navbarRight{
+    position:fixed;/*固定視窗在畫面上*/
+    top:0;/*固定在畫面上方*/
+    right:0;/*固定在畫面右方*/
+    width:200px;
+    height:100vh;/*填滿整格視窗高度*/
+    background-color:white;
+    flex-direction:column;/*變成直排*/
+    justify-content:flex-start;
+    padding:50px 20px 20px;/*上50px 左右20px 下20px*/
+    gap:15px;
+    transform:translateX(100%);
+    z-index: 1000;/*讓他跑到最上排*/
+}
+.navbarRight.open{
+    animation:slideIn 0.3s forwards;/*加forwards確保不會跳回初始*/
+}
+@keyframes slideIn{
+    0%{
+        transform:translateX(100%);
+        box-shadow:none;
+    }
+    100%{
+        transform:translateX(0%);
+        box-shadow:-2px 0px 10px 0px rgb(0,0,0,0.5);
+    }
+}
+.navbarRight.close{
+    animation:slideOut 0.3s forwards;
+}
+@keyframes slideOut{
+    0%{
+        transform:translateX(0%);
+        box-shadow:-2px 0px 10px 0px rgb(0,0,0,0.5);
+    }
+    100%{
+        transform:translateX(100%);
+        box-shadow:none
+    }
+}
+.item{
+    color:black;
+    display:flex;
+    justify-content:center;
+    text-decoration: none;
+    padding-bottom: 10px;
+}
+.closeBtn {
+        display: block;
+        position: absolute;
+        top: 15px;
+        right: 20px;
+        font-size: 28px;
+        color: black;
+        background: none;
+        border: none;
+        cursor: pointer;
+}
+}
